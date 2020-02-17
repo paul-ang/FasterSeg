@@ -14,23 +14,23 @@ from tensorboardX import SummaryWriter
 import numpy as np
 import matplotlib
 # Force matplotlib to not use any Xwindows backend.
-from datasets.plvp.plvp import PLVP
+from tools.datasets import PLVP
 
 matplotlib.use('Agg')
 from matplotlib import pyplot as plt
 from thop import profile
 
-from config_search import config
-from dataloader import get_train_loader
+from search.config_search import config
+from search.dataloader import get_train_loader
 
-from utils.init_func import init_weight
-from seg_opr.loss_opr import ProbOhemCrossEntropy2d
-from eval import SegEvaluator
+from tools.utils.init_func import init_weight
+from tools.seg_opr.loss_opr import ProbOhemCrossEntropy2d
+from search.eval import SegEvaluator
 
-from architect import Architect
-from utils.darts_utils import create_exp_dir, save, plot_op, plot_path_width, objective_acc_lat
-from model_search import Network_Multi_Path as Network
-from model_seg import Network_Multi_Path_Infer
+from search.architect import Architect
+from tools.utils.darts_utils import create_exp_dir, save, plot_op, plot_path_width, objective_acc_lat
+from search.model_search import Network_Multi_Path as Network
+from search.model_seg import Network_Multi_Path_Infer
 
 
 def main(pretrain=True):
@@ -64,7 +64,7 @@ def main(pretrain=True):
 
     # Model #######################################
     model = Network(config.num_classes, config.layers, ohem_criterion, Fch=config.Fch, width_mult_list=config.width_mult_list, prun_modes=config.prun_modes, stem_head_width=config.stem_head_width)
-    flops, params = profile(model, inputs=(torch.randn(1, 3, 1024, 2048),), verbose=False)
+    flops, params = profile(model, inputs=(torch.randn(1, 3, 320, 320),), verbose=False)
     logging.info("params = %fMB, FLOPs = %fGB", params / 1e6, flops / 1e9)
     model = model.cuda()
     if type(pretrain) == str:
@@ -270,7 +270,7 @@ def infer(epoch, model, evaluator, logger, FPS=True):
 
 
 def arch_logging(model, args, logger, epoch):
-    input_size = (1, 3, 1024, 2048)
+    input_size = (1, 3, 320, 320)
     net = Network_Multi_Path_Infer(
         [getattr(model, model._arch_names[model.arch_idx]["alphas"][0]).clone().detach(), getattr(model, model._arch_names[model.arch_idx]["alphas"][1]).clone().detach(), getattr(model, model._arch_names[model.arch_idx]["alphas"][2]).clone().detach()],
         [None, getattr(model, model._arch_names[model.arch_idx]["betas"][0]).clone().detach(), getattr(model, model._arch_names[model.arch_idx]["betas"][1]).clone().detach()],

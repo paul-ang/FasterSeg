@@ -5,10 +5,10 @@ import cv2
 cv2.setNumThreads(0)
 import numpy as np
 
-from utils.visualize import print_iou, show_img
-from engine.evaluator import Evaluator
-from engine.logger import get_logger
-from seg_opr.metric import hist_info, compute_score
+from tools.utils.visualize import print_iou, show_img
+from tools.engine.evaluator import Evaluator
+from tools.engine.logger import get_logger
+from tools.seg_opr.metric import hist_info, compute_score
 
 logger = get_logger()
 
@@ -21,7 +21,7 @@ class SegEvaluator(Evaluator):
         name = data['fn']
 
         if len(config.eval_scale_array) == 1:
-            pred = self.whole_eval(img, None, device)
+            pred = self.whole_eval(img, None, device=device)
         else:
             pred = self.sliding_eval(img, config.eval_crop_size, config.eval_stride_rate, device)
         hist_tmp, labeled_tmp, correct_tmp = hist_info(config.num_classes, pred, label)
