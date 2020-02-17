@@ -105,7 +105,8 @@ def main(pretrain=True):
                     'gt_root': config.gt_root_folder,
                     'train_source': config.train_source,
                     'eval_source': config.eval_source,
-                    'down_sampling': config.down_sampling}
+                    'down_sampling': config.down_sampling,
+                    'gt_down_sampling': config.gt_down_sampling}
     train_loader_model = get_train_loader(config, PLVP, portion=config.train_portion)
     train_loader_arch = get_train_loader(config, PLVP, portion=config.train_portion-1)
 

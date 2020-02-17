@@ -37,8 +37,10 @@ def get_train_loader(config, dataset, portion=None, worker=None):
                     'train_source': config.train_source,
                     'eval_source': config.eval_source,
                     'down_sampling': config.down_sampling,
-                    'portion': portion}
-    train_preprocess = TrainPre(config, config.image_mean, config.image_std)
+                    'portion': portion,
+                    'gt_down_sampling': config.gt_down_sampling}
+    # train_preprocess = TrainPre(config, config.image_mean, config.image_std)
+    train_preprocess = None
 
     train_dataset = dataset(data_setting, "train", train_preprocess, config.batch_size * config.niters_per_epoch)
 

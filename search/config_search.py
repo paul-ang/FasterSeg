@@ -38,16 +38,16 @@ def add_path(path):
 add_path(osp.join(C.root_dir, 'tools'))
 
 """Image Config"""
-C.num_classes = 19
+C.num_classes = 2
 C.background = -1
 C.image_mean = np.array([0.485, 0.456, 0.406])
 C.image_std = np.array([0.229, 0.224, 0.225])
-C.down_sampling = 2 # first down_sampling then crop ......
-C.image_height = 160 # this size is after down_sampling
-C.image_width = 160*2
+C.down_sampling = [320, 320] # first down_sampling then crop ......
+C.image_height = 320 # this size is after down_sampling
+C.image_width = 320
 C.gt_down_sampling = 8 # model's default output size without final upsampling
-C.num_train_imgs = 2975
-C.num_eval_imgs = 500
+C.num_train_imgs = 3600
+C.num_eval_imgs = 400
 
 """ Settings for network, this would be different for each kind of model"""
 C.bn_eps = 1e-5
@@ -64,8 +64,8 @@ C.train_scale_array = [0.75, 1, 1.25]
 C.eval_stride_rate = 5 / 6
 C.eval_scale_array = [1, ]
 C.eval_flip = False
-C.eval_height = 1024
-C.eval_width = 2048
+C.eval_height = 320
+C.eval_width = 320
 
 
 """ Search Config """
@@ -90,16 +90,16 @@ if C.pretrain == True:
     C.niters_per_epoch = max(C.num_train_imgs // 2 // C.batch_size, 400)
     C.lr = 2e-2
     C.latency_weight = [0, 0]
-    C.image_height = 256 # this size is after down_sampling
-    C.image_width = 256*2
+    C.image_height = 320 # this size is after down_sampling
+    C.image_width = 320
     C.nepochs = 20
     C.save = "pretrain-%dx%d_F%d.L%d_batch%d"%(C.image_height, C.image_width, C.Fch, C.layers, C.batch_size)
 else:
     C.batch_size = 2
     C.niters_per_epoch = max(C.num_train_imgs // 2 // C.batch_size, 400)
     C.latency_weight = [0, 1e-2,]
-    C.image_height = 224 # this size is after down_sampling
-    C.image_width = 224*2
+    C.image_height = 320 # this size is after down_sampling
+    C.image_width = 320
     C.nepochs = 30
     C.save = "%dx%d_F%d.L%d_batch%d"%(C.image_height, C.image_width, C.Fch, C.layers, C.batch_size)
 ########################################
