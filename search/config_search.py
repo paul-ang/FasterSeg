@@ -22,12 +22,13 @@ C.this_dir = C.abs_dir.split(osp.sep)[-1]
 C.root_dir = C.abs_dir[:C.abs_dir.index(C.repo_name) + len(C.repo_name)]
 
 """Data Dir"""
-C.dataset_path = "/ssd1/chenwy/cityscapes/"
-C.img_root_folder = C.dataset_path
-C.gt_root_folder = C.dataset_path
-C.train_source = osp.join(C.dataset_path, "cityscapes_train_fine.txt")
-C.eval_source = osp.join(C.dataset_path, "cityscapes_val_fine.txt")
-C.test_source = osp.join(C.dataset_path, "cityscapes_test.txt")
+C.dataset_path = "/tmp/FasterSeg/data/plvp"
+C.fold = 1
+C.img_root_folder = C.dataset_path + '/images'
+C.gt_root_folder = C.dataset_path + '/images'
+C.train_source = osp.join(C.dataset_path, "train_split_fo{}.txt".format(C.fold))
+C.eval_source = osp.join(C.dataset_path, "valid_split_fo{}.txt".format(C.fold))
+C.test_source = osp.join(C.dataset_path, "test_split_fo{}.txt".format(C.fold))
 
 """Path Config"""
 def add_path(path):

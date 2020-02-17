@@ -14,13 +14,14 @@ from tensorboardX import SummaryWriter
 import numpy as np
 import matplotlib
 # Force matplotlib to not use any Xwindows backend.
+from datasets.plvp.plvp import PLVP
+
 matplotlib.use('Agg')
 from matplotlib import pyplot as plt
 from thop import profile
 
 from config_search import config
 from dataloader import get_train_loader
-from datasets import Cityscapes
 
 from utils.init_func import init_weight
 from seg_opr.loss_opr import ProbOhemCrossEntropy2d
@@ -105,10 +106,10 @@ def main(pretrain=True):
                     'train_source': config.train_source,
                     'eval_source': config.eval_source,
                     'down_sampling': config.down_sampling}
-    train_loader_model = get_train_loader(config, Cityscapes, portion=config.train_portion)
-    train_loader_arch = get_train_loader(config, Cityscapes, portion=config.train_portion-1)
+    train_loader_model = get_train_loader(config, PLVP, portion=config.train_portion)
+    train_loader_arch = get_train_loader(config, PLVP, portion=config.train_portion-1)
 
-    evaluator = SegEvaluator(Cityscapes(data_setting, 'val', None), config.num_classes, config.image_mean,
+    evaluator = SegEvaluator(PLVP(data_setting, 'val', None), config.num_classes, config.image_mean,
                              config.image_std, model, config.eval_scale_array, config.eval_flip, 0, config=config,
                              verbose=False, save_path=None, show_image=False)
 
