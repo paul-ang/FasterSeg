@@ -69,8 +69,8 @@ def print_iou(iu, mean_pixel_acc, class_names=None, show_no_back=False,
             cls = '%d %s' % (i + 1, class_names[i])
         lines.append('%-8s\t%.3f%%' % (cls, iu[i] * 100))
     mean_IU = np.nanmean(iu)
-    # mean_IU_no_back = np.nanmean(iu[1:])
-    mean_IU_no_back = np.nanmean(iu[:-1])
+    mean_IU_no_back = np.nanmean(iu[1:])
+    # mean_IU_no_back = np.nanmean(iu[:-1])
     if show_no_back:
         lines.append(
             '----------------------------     %-8s\t%.3f%%\t%-8s\t%.3f%%\t%-8s\t%.3f%%' % (
