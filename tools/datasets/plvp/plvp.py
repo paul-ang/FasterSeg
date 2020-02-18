@@ -1,6 +1,6 @@
 from random import shuffle
 import numpy as np
-from datasets.BaseDataset import BaseDataset
+from tools.datasets.BaseDataset import BaseDataset
 import cv2
 
 
@@ -42,8 +42,6 @@ class PLVP(BaseDataset):
 
         img = self._open_image(img_path + '.jpg',
                                down_sampling=self._down_sampling)
-        img = img.astype(np.float32) / 255.0
-        img = img.transpose(2, 0, 1)
 
         try:
             gt = self._open_image(gt_path + '_lane.png', cv2.IMREAD_GRAYSCALE,
@@ -54,10 +52,27 @@ class PLVP(BaseDataset):
                                   dtype=dtype,
                                   down_sampling=self._down_sampling)
 
+        # Preprocess
+        img = img.astype(np.float32) / 255.0
+        img = img.transpose(2, 0, 1)
+        gt = gt // 255  # road is originally denoted with 255
+
         # Model output before final outsampling
-        gt = cv2.resize(gt, (
-            gt.shape[0] // self.gt_down_sampling,
-            gt.shape[1] // self.gt_down_sampling),
-                        interpolation=cv2.INTER_NEAREST)
+        if self._split_name == 'train':
+            gt = cv2.resize(gt, (
+                gt.shape[0] // self.gt_down_sampling,
+                gt.shape[1] // self.gt_down_sampling),
+                            interpolation=cv2.INTER_NEAREST)
 
         return img, gt
+
+    @classmethod
+    def get_class_colors(*args):
+        return [[255, 255, 255], [255, 51, 51]]
+
+    @classmethod
+    def get_class_names(*args):
+        # class counting(gtFine)
+        # 2953 2811 2934  970 1296 2949 1658 2808 2891 1654 2686 2343 1023 2832
+        # 359  274  142  513 1646
+        return ['Background', 'Pedestrian lane']

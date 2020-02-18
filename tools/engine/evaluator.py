@@ -204,15 +204,15 @@ class Evaluator(object):
 
     # evaluate the whole image at once
     def whole_eval(self, img, output_size, input_size=None, device=None):
-        if input_size is not None:
-            img, margin = self.process_image(img, input_size)
-        else:
-            img = self.process_image(img, input_size)
+        # if input_size is not None:
+        #     img, margin = self.process_image(img, input_size)
+        # else:
+        #     img = self.process_image(img, input_size)
 
         pred = self.val_func_process(img, device)
-        if input_size is not None:
-            pred = pred[:, margin[0]:(pred.shape[1] - margin[1]),
-                   margin[2]:(pred.shape[2] - margin[3])]
+        # if input_size is not None:
+        #     pred = pred[:, margin[0]:(pred.shape[1] - margin[1]),
+        #            margin[2]:(pred.shape[2] - margin[3])]
         pred = pred.permute(1, 2, 0)
         pred = pred.cpu().numpy()
         if output_size is not None:
