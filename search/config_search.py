@@ -57,7 +57,7 @@ C.bn_momentum = 0.1
 C.lr = 0.01
 C.momentum = 0.9
 C.weight_decay = 5e-4
-C.num_workers = 4
+C.num_workers = 6
 C.train_scale_array = [0.75, 1, 1.25]
 
 """Eval Config"""
@@ -86,8 +86,8 @@ C.stem_head_width = [(1, 1), (8./12, 8./12),]
 C.FPS_min = [0, 155.]
 C.FPS_max = [0, 175.]
 if C.pretrain == True:
-    C.batch_size = 3
-    C.niters_per_epoch = max(C.num_train_imgs // 2 // C.batch_size, 400)
+    C.batch_size = 5
+    C.niters_per_epoch = C.num_train_imgs // 2 // C.batch_size
     C.lr = 2e-2
     C.latency_weight = [0, 0]
     C.image_height = 320 # this size is after down_sampling
@@ -95,8 +95,8 @@ if C.pretrain == True:
     C.nepochs = 20
     C.save = "pretrain-%dx%d_F%d.L%d_batch%d"%(C.image_height, C.image_width, C.Fch, C.layers, C.batch_size)
 else:
-    C.batch_size = 2
-    C.niters_per_epoch = max(C.num_train_imgs // 2 // C.batch_size, 400)
+    C.batch_size = 5
+    C.niters_per_epoch = C.num_train_imgs // 2 // C.batch_size
     C.latency_weight = [0, 1e-2,]
     C.image_height = 320 # this size is after down_sampling
     C.image_width = 320
