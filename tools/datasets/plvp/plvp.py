@@ -2,6 +2,7 @@ from random import shuffle
 import numpy as np
 from tools.datasets.BaseDataset import BaseDataset
 import cv2
+cv2.setNumThreads(0)
 
 
 class PLVP(BaseDataset):
