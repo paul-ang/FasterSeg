@@ -76,8 +76,8 @@ C.arch_weight_decay = 0
 C.layers = 16
 C.branch = 2
 
-C.pretrain = True
-# C.pretrain = "search-pretrain-256x512_F12.L16_batch3-20200101-012345"
+# C.pretrain = True
+C.pretrain = "search-pretrain-320x320_F12.L16_batch5-20200218-003414"
 ########################################
 C.prun_modes = ['max', 'arch_ratio',]
 C.Fch = 12
@@ -86,7 +86,7 @@ C.stem_head_width = [(1, 1), (8./12, 8./12),]
 C.FPS_min = [0, 155.]
 C.FPS_max = [0, 175.]
 if C.pretrain == True:
-    C.batch_size = 5
+    C.batch_size = 4
     C.niters_per_epoch = C.num_train_imgs // 2 // C.batch_size
     C.lr = 2e-2
     C.latency_weight = [0, 0]
@@ -95,7 +95,7 @@ if C.pretrain == True:
     C.nepochs = 20
     C.save = "pretrain-%dx%d_F%d.L%d_batch%d"%(C.image_height, C.image_width, C.Fch, C.layers, C.batch_size)
 else:
-    C.batch_size = 5
+    C.batch_size = 4
     C.niters_per_epoch = C.num_train_imgs // 2 // C.batch_size
     C.latency_weight = [0, 1e-2,]
     C.image_height = 320 # this size is after down_sampling
