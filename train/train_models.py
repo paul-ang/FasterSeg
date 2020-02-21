@@ -15,22 +15,24 @@ from tensorboardX import SummaryWriter
 import numpy as np
 from thop import profile
 
-from config_train import config
+# from train.config_train import config
+from train.config_train import config
+
 if config.is_eval:
     config.save = 'eval-{}-{}'.format(config.save, time.strftime("%Y%m%d-%H%M%S"))
 else:
     config.save = 'train-{}-{}'.format(config.save, time.strftime("%Y%m%d-%H%M%S"))
-from dataloader import get_train_loader
-from datasets import Cityscapes
+from train.dataloader import get_train_loader
+from tools.datasets import Cityscapes, PLVP
 
-from utils.init_func import init_weight
-from seg_opr.loss_opr import ProbOhemCrossEntropy2d
-from eval import SegEvaluator
-from test import SegTester
+from tools.utils.init_func import init_weight
+from tools.seg_opr.loss_opr import ProbOhemCrossEntropy2d
+from train.eval import SegEvaluator
+from train.test import SegTester
 
-from utils.darts_utils import create_exp_dir, save, plot_op, plot_path_width, objective_acc_lat
-from model_seg import Network_Multi_Path_Infer as Network
-import seg_metrics
+from tools.utils.darts_utils import create_exp_dir, save, plot_op, plot_path_width, objective_acc_lat
+from train.model_seg import Network_Multi_Path_Infer as Network
+from train.seg_metrics import Seg_Metrics
 
 
 
@@ -70,16 +72,18 @@ def main():
                         'train_source': config.train_eval_source,
                         'eval_source': config.eval_source,
                         'test_source': config.test_source,
-                        'down_sampling': config.down_sampling}
+                        'down_sampling': config.down_sampling,
+                        'gt_down_sampling': config.gt_down_sampling}
     else:
         data_setting = {'img_root': config.img_root_folder,
                         'gt_root': config.gt_root_folder,
                         'train_source': config.train_source,
                         'eval_source': config.eval_source,
                         'test_source': config.test_source,
-                        'down_sampling': config.down_sampling}
+                        'down_sampling': config.down_sampling,
+                        'gt_down_sampling': config.gt_down_sampling}
 
-    train_loader = get_train_loader(config, Cityscapes, test=config.is_test)
+    train_loader = get_train_loader(config, PLVP, test=config.is_test)
 
 
     # Model #######################################
@@ -134,11 +138,11 @@ def main():
             state.update(pretrained_dict)
             model.load_state_dict(state)
 
-        evaluator = SegEvaluator(Cityscapes(data_setting, 'val', None), config.num_classes, config.image_mean,
+        evaluator = SegEvaluator(PLVP(data_setting, 'val', None), config.num_classes, config.image_mean,
                                  config.image_std, model, config.eval_scale_array, config.eval_flip, 0, out_idx=0, config=config,
                                  verbose=False, save_path=None, show_image=False, show_prediction=False)
         evaluators.append(evaluator)
-        tester = SegTester(Cityscapes(data_setting, 'test', None), config.num_classes, config.image_mean,
+        tester = SegTester(PLVP(data_setting, 'test', None), config.num_classes, config.image_mean,
                                  config.image_std, model, config.eval_scale_array, config.eval_flip, 0, out_idx=0, config=config,
                                  verbose=False, save_path=None, show_prediction=False)
         testers.append(tester)
@@ -229,7 +233,7 @@ def train(train_loader, models, criterion, distill_criterion, optimizer, logger,
     pbar = tqdm(range(config.niters_per_epoch), file=sys.stdout, bar_format=bar_format, ncols=80)
     dataloader = iter(train_loader)
 
-    metrics = [ seg_metrics.Seg_Metrics(n_classes=config.num_classes) for _ in range(len(models)) ]
+    metrics = [Seg_Metrics(n_classes=config.num_classes) for _ in range(len(models)) ]
     lamb = 0.2
     for step in pbar:
         optimizer.zero_grad()
