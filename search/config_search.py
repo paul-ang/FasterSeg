@@ -57,7 +57,7 @@ C.bn_momentum = 0.1
 C.lr = 0.01
 C.momentum = 0.9
 C.weight_decay = 5e-4
-C.num_workers = 6
+C.num_workers = 4
 C.train_scale_array = [0.75, 1, 1.25]
 
 """Eval Config"""
