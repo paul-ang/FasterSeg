@@ -66,22 +66,13 @@ def main():
     distill_criterion = nn.KLDivLoss()
 
     # data loader ###########################
-    if config.is_test:
-        data_setting = {'img_root': config.img_root_folder,
-                        'gt_root': config.gt_root_folder,
-                        'train_source': config.train_eval_source,
-                        'eval_source': config.eval_source,
-                        'test_source': config.test_source,
-                        'down_sampling': config.down_sampling,
-                        'gt_down_sampling': config.gt_down_sampling}
-    else:
-        data_setting = {'img_root': config.img_root_folder,
-                        'gt_root': config.gt_root_folder,
-                        'train_source': config.train_source,
-                        'eval_source': config.eval_source,
-                        'test_source': config.test_source,
-                        'down_sampling': config.down_sampling,
-                        'gt_down_sampling': config.gt_down_sampling}
+    data_setting = {'img_root': config.img_root_folder,
+                    'gt_root': config.gt_root_folder,
+                    'train_source': config.train_source,
+                    'eval_source': config.eval_source,
+                    'test_source': config.test_source,
+                    'down_sampling': config.down_sampling,
+                    'gt_down_sampling': config.gt_down_sampling}
 
     train_loader = get_train_loader(config, PLVP, test=config.is_test)
 
@@ -138,7 +129,7 @@ def main():
             state.update(pretrained_dict)
             model.load_state_dict(state)
 
-        evaluator = SegEvaluator(PLVP(data_setting, 'val', None), config.num_classes, config.image_mean,
+        evaluator = SegEvaluator(PLVP(data_setting, 'test', None), config.num_classes, config.image_mean,
                                  config.image_std, model, config.eval_scale_array, config.eval_flip, 0, out_idx=0, config=config,
                                  verbose=False, save_path=None, show_image=False, show_prediction=False)
         evaluators.append(evaluator)

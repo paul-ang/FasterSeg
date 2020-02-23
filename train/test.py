@@ -12,12 +12,12 @@ import numpy as np
 import torch
 import torch.multiprocessing as mp
 
-from utils.pyt_utils import ensure_dir, link_file, load_model, parse_devices
-from utils.visualize import print_iou, show_prediction
-from engine.tester import Tester
-from engine.logger import get_logger
+from tools.utils.pyt_utils import ensure_dir, link_file, load_model, parse_devices
+from tools.utils.visualize import print_iou, show_prediction
+from tools.engine.tester import Tester
+from tools.engine.logger import get_logger
 from seg_opr.metric import hist_info, compute_score
-from datasets.cityscapes import Cityscapes
+from tools.datasets.cityscapes import Cityscapes
 
 logger = get_logger()
 
